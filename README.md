@@ -1,41 +1,33 @@
-Imagine there is a policy implemented in China and it acts on city level. We
-want to observe how the effects are in the treated city than untreated city. DID
-is not a good option to tackle this because cities are so different then should
-not be considered equally. So we allocate appropriate weights to the control
-groups and fit anti-factor situation of the treatment group. The new method is
-Synthetic DID(SDID). SDID aims to constitute an anti-factor of the treatment
-group to obtain a more precise outcome than traditional DID when groups are
-relatively different in individual or time level.
-However, original SDID is also limited in many situation, especially there
-are many treatment groups because SDID allocates different weights to control
-units, but for treatment groups, they are simply take the mean value, in other
-words, the same weights. Let’s go back to the assumption. The policy affect
-many different cities, including the metropolitan Beijing, Shanghai, and Jiamusi
-is also included. You maybe never hear about the city but you could easily tell
-it could not as rich as the two metropolitan or you have heard it before. That is
-where the problem lies. You can not use it together with the two to constitute
-the so-called anti-factor otherwise there is no meaning in it because the antifactor can not be defined as any city’s anti-factor.
-So what I want to do is divide the treatment group into smaller groups
-and each of them shares similar characteristics. I intend to use k-means(or
-other algorithms) to distinguish them. After that, fit anti-factor situation for
-each group and calculate the average treatment effect(ATT) dividedly. Finally,
-allocate group weights based on the number of units in the group to get a more
-precise and reasonable outcome than existed methods.
+Overview
 
+Imagine a policy implemented at the city level in China. We want to examine how the policy’s effects differ between treated and untreated cities. The traditional Difference-in-Differences (DID) approach is not ideal here because cities vary significantly and should not be treated equally. Instead, we allocate appropriate weights to the control group to construct a counterfactual for the treatment group. This new method, Synthetic DID (SDID), aims to generate a counterfactual for the treated units, yielding more precise results than traditional DID when there are significant differences at the individual or time level.
 
-Improvement in Computing
-By cluster algorithm we can obtain a more precious outcome in mathematics.
-However, it costs more computation resources. If I do not optimize it in some
-aspects, time consumption will increase by as many multiples as the number
-of groups. Due to limited time and professional knowledge, I just use parallel
-computing technology here when calculate different groups ATT.
-Shortcoming in Computing
-Just as mentioned last section, I can only simplify the calculation process
-to several times or equal time cost than traditional SDID based on the cores in
-CPU. But there is a remained problem that placebo computation is the most
-time-consuming process in it. I can not optimize it in this stage.
-Shortcoming in this method
-Talking about the new algorithm in the SDID after cluster matching. Personally, I think units fixed effects are far more important than time fixed effects
-in this model. However, the reality is I did not consider the time weights heterogeneity after treatment. I just justify it in mathematics and at individual level.
-If there is a better algorithm is launched in the future, I think it will optimize
-the time part.
+However, the original SDID method has limitations, especially when there are many treatment groups. While SDID assigns different weights to control units, it simply averages the outcomes for all treatment units—effectively giving them equal weight. Consider that the policy affects a range of cities: major metropolitan areas like Beijing and Shanghai, as well as smaller cities such as Jiamusi. Even if you have never heard of Jiamusi, you can infer that its economic conditions are very different from those of the larger cities. This discrepancy means that combining these diverse units to form a single counterfactual is not meaningful.
+
+Proposed Method
+
+To address this issue, I propose dividing the treatment group into smaller clusters of cities that share similar characteristics. The steps are as follows:
+
+Clustering:
+Use k-means or other clustering algorithms to group the treated cities based on relevant characteristics.
+
+Counterfactual Construction:
+For each cluster, construct an appropriate counterfactual (i.e., “anti-factor”) by allocating weights to the control units.
+
+ATT Calculation:
+Compute the Average Treatment Effect (ATT) separately for each cluster.
+
+Aggregation:
+Combine the cluster-specific ATT estimates by weighting each group according to the number of units it contains. This approach aims to produce a more precise and reasonable overall outcome than existing methods.
+
+Computational Improvements
+
+By using clustering algorithms, we can achieve more accurate mathematical outcomes. However, this approach requires additional computational resources. Without further optimization, the computation time may increase roughly in proportion to the number of clusters. Due to time and expertise constraints, I have employed parallel computing techniques to calculate the ATT for different clusters concurrently.
+
+Computational Limitations
+
+Although parallel computing helps reduce overall computation time—potentially matching or even improving upon the time cost of traditional SDID (depending on the number of available CPU cores)—the placebo tests remain the most time-consuming part of the process. At this stage, I have not been able to optimize this component further.
+
+Methodological Limitations
+
+Regarding the new algorithm applied after cluster matching, I believe that unit fixed effects play a much more critical role than time fixed effects in this model. However, in the current approach, I have not accounted for the heterogeneity of time weights after treatment; I have only justified the method mathematically at the individual level. I anticipate that future algorithmic advancements may better address and optimize the treatment of time effects.
